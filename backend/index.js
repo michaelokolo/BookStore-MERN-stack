@@ -4,8 +4,10 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import booksRoute from './routes/booksRoute.js';
 import cors from 'cors';
+import path from 'path';
 
 dotenv.config();
+const __dirname = path.resolve();
 const app = express();
 
 //Middleware for parsing request body
@@ -29,6 +31,12 @@ app.get('/', (request, response) => {
 });
 
 app.use('/books', booksRoute);
+
+app.use(express.static(path.join(__dirname, '/backend/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'backend', 'dist', 'index.html'));
+});
 
 mongoose
   .connect(process.env.MONGODB_URI)
